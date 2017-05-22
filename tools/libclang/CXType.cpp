@@ -646,6 +646,27 @@ CXType clang_getCursorResultType(CXCursor C) {
   return MakeCXType(QualType(), cxcursor::getCursorTU(C));
 }
 
+int clang_getExceptionSpecificationType(CXType X) {
+    QualType T = GetQualType(X);
+    if (T.isNull()) {
+        return -1;
+    }
+
+    if (const FunctionProtoType* FD = T->getAs<FunctionProtoType>()) {
+        return static_cast<int>(FD->getExceptionSpecType());
+    } else {
+        return -1;
+    }
+}
+
+int clang_getCursorExceptionSpecificationType(CXCursor C) {
+    if (clang_isDeclaration(C.kind)) {
+        return clang_getExceptionSpecificationType(clang_getCursorType(C));
+    } else {
+        return -1;
+    }
+}
+
 unsigned clang_isPODType(CXType X) {
   QualType T = GetQualType(X);
   if (T.isNull())
