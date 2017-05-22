@@ -31,4 +31,17 @@ TokenKinds = [
     ('COMMENT', 4),
 ]
 
+# Maps to ExceptionSpecificationType.
+ExceptionSpecificationType = [
+    ('None', 0),
+    ('DynamicNone', 1),
+    ('Dynamic', 2),
+    ('MSAny', 3),
+    ('BasicNoexcept', 4),
+    ('ComputedNoexcept', 5),
+    ('Unevaluated', 6),
+    ('Uninstantiated', 7),
+    ('Unparsed', 8),
+]
+
 __all__ = ['TokenKinds']
