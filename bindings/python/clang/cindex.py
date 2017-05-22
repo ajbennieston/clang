@@ -1587,6 +1587,22 @@ class Cursor(Structure):
         return self._result_type
 
     @property
+    def exception_specification_type(self):
+        '''
+        Retrieve the exception specification type, which is one of the values
+        from enumerations.ExceptionSpecificationType.
+        '''
+        if not hasattr(self, '_exception_specification_type'):
+            self._exception_specification_type = None
+            exc_type = conf.lib.clang_getCursorExceptionSpecificationType(self)
+            for entry in clang.enumerations.ExceptionSpecificationType:
+                if exc_type == entry[1]:
+                    self._exception_specification_type = entry[0]
+                    break
+
+        return self._exception_specification_type
+
+    @property
     def underlying_typedef_type(self):
         """Return the underlying type of a typedef declaration.
 
@@ -2253,6 +2269,17 @@ class Type(Structure):
         conf.lib.clang_Type_visitFields(self,
                             callbacks['fields_visit'](visitor), fields)
         return iter(fields)
+
+    def get_exception_specification_type(self):
+        """
+        Return the type of the exception specification; a value from
+        enumerations.ExceptionSpecificationType.
+        """
+        value = conf.lib.clang.getExceptionSpecificationType(self)
+        for entry in clang.enumerations.ExceptionSpecificationType:
+            if entry[2] == value:
+                return entry[1]
+        return None
 
     @property
     def spelling(self):
