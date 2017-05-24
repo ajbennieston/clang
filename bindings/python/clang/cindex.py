@@ -1367,6 +1367,30 @@ TemplateArgumentKind.DECLARATION = TemplateArgumentKind(2)
 TemplateArgumentKind.NULLPTR = TemplateArgumentKind(3)
 TemplateArgumentKind.INTEGRAL = TemplateArgumentKind(4)
 
+### Exception Specification Kinds ###
+class ExceptionSpecificationKind(BaseEnumeration):
+    """
+    An ExceptionSpecificationKind describes the kind of exception specification
+    that a function has.
+    """
+    
+    # The required BaseEnumeration declarations.
+    _kinds = []
+    _name_map = None
+
+    def __repr__(self):
+        return 'ExceptionSpecificationKind.{}'.format(self.name)
+
+ExceptionSpecificationKind.NONE = ExceptionSpecificationKind(0)
+ExceptionSpecificationKind.DYNAMIC_NONE = ExceptionSpecificationKind(1)
+ExceptionSpecificationKind.DYNAMIC = ExceptionSpecificationKind(2)
+ExceptionSpecificationKind.MS_ANY = ExceptionSpecificationKind(3)
+ExceptionSpecificationKind.BASIC_NOEXCEPT = ExceptionSpecificationKind(4)
+ExceptionSpecificationKind.COMPUTED_NOEXCEPT = ExceptionSpecificationKind(5)
+ExceptionSpecificationKind.UNEVALUATED = ExceptionSpecificationKind(6)
+ExceptionSpecificationKind.UNINSTANTIATED = ExceptionSpecificationKind(7)
+ExceptionSpecificationKind.UNPARSED = ExceptionSpecificationKind(8)
+
 ### Cursors ###
 
 class Cursor(Structure):
@@ -1587,20 +1611,16 @@ class Cursor(Structure):
         return self._result_type
 
     @property
-    def exception_specification_type(self):
+    def exception_specification_kind(self):
         '''
-        Retrieve the exception specification type, which is one of the values
-        from enumerations.ExceptionSpecificationType.
+        Retrieve the exception specification kind, which is one of the values
+        from the ExceptionSpecificationKind enumeration.
         '''
-        if not hasattr(self, '_exception_specification_type'):
-            self._exception_specification_type = None
-            exc_type = conf.lib.clang_getCursorExceptionSpecificationType(self)
-            for entry in clang.enumerations.ExceptionSpecificationType:
-                if exc_type == entry[1]:
-                    self._exception_specification_type = entry[0]
-                    break
+        if not hasattr(self, '_exception_specification_kind'):
+            exc_kind = conf.lib.clang_getCursorExceptionSpecificationType(self)
+            self._exception_specification_kind = ExceptionSpecificationKind.from_id(exc_kind)
 
-        return self._exception_specification_type
+        return self._exception_specification_kind
 
     @property
     def underlying_typedef_type(self):
@@ -2270,16 +2290,13 @@ class Type(Structure):
                             callbacks['fields_visit'](visitor), fields)
         return iter(fields)
 
-    def get_exception_specification_type(self):
+    def get_exception_specification_kind(self):
         """
-        Return the type of the exception specification; a value from
-        enumerations.ExceptionSpecificationType.
+        Return the kind of the exception specification; a value from
+        the ExceptionSpecificationKind enumeration.
         """
-        value = conf.lib.clang.getExceptionSpecificationType(self)
-        for entry in clang.enumerations.ExceptionSpecificationType:
-            if entry[2] == value:
-                return entry[1]
-        return None
+        return ExceptionSpecificationKind.from_id(
+                conf.lib.clang.getExceptionSpecificationType(self))
 
     @property
     def spelling(self):
