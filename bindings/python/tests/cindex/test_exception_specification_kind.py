@@ -1,8 +1,7 @@
 import clang.cindex
 from clang.cindex import ExceptionSpecificationKind
-import os
+from .util import get_tu
 
-kInputsDir = os.path.join(os.path.dirname(__file__), 'INPUTS')
 
 def find_function_declarations(node, declarations=[]):
     if node.kind == clang.cindex.CursorKind.FUNCTION_DECL:
@@ -13,15 +12,16 @@ def find_function_declarations(node, declarations=[]):
 
 
 def test_exception_specification_kind():
-    index = clang.cindex.Index.create()
-    input_file = os.path.join(kInputsDir, 'exception_spec.cpp')
-    tu = index.parse(input_file, ['-std=c++14'])
-    declarations = find_function_declarations(tu.cursor)
+    source = """int square1(int x);
+                int square2(int x) noexcept;
+                int square3(int x) noexcept(noexcept(x * x));"""
 
+    tu = get_tu(source, lang='cpp', flags=['-std=c++14'])
+
+    declarations = find_function_declarations(tu.cursor)
     expected = [
         ('square1', ExceptionSpecificationKind.NONE),
         ('square2', ExceptionSpecificationKind.BASIC_NOEXCEPT),
         ('square3', ExceptionSpecificationKind.COMPUTED_NOEXCEPT)
-        ]
+    ]
     assert declarations == expected
-
