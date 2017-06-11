@@ -1373,7 +1373,7 @@ class ExceptionSpecificationKind(BaseEnumeration):
     An ExceptionSpecificationKind describes the kind of exception specification
     that a function has.
     """
-    
+
     # The required BaseEnumeration declarations.
     _kinds = []
     _name_map = None
