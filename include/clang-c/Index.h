@@ -182,7 +182,7 @@ enum CXCursor_ExceptionSpecificationKind {
   /**
    * \brief The cursor has no exception specification.
    */
-  CXCursor_ExceptionSpecificationKind_None, ///< no exception specification
+  CXCursor_ExceptionSpecificationKind_None,
 
   /**
    * \brief The cursor has exception specification throw()
@@ -205,12 +205,12 @@ enum CXCursor_ExceptionSpecificationKind {
   CXCursor_ExceptionSpecificationKind_BasicNoexcept,
 
   /**
-   * \brief The cursor has exception specification computed noexcept..
+   * \brief The cursor has exception specification computed noexcept.
    */
   CXCursor_ExceptionSpecificationKind_ComputedNoexcept,
 
   /**
-   * \brief The exception specification has not yet been evaluated..
+   * \brief The exception specification has not yet been evaluated
    */
   CXCursor_ExceptionSpecificationKind_Unevaluated,
 

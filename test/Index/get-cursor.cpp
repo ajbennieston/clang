@@ -149,7 +149,7 @@ const int operator""_toint(unsigned long long val) { return int(val); }
 void f_noexcept() noexcept;
 template <class T> void f_computed_noexcept(T t) noexcept(noexcept(t+t));
 void f_dynamic_noexcept_none() throw();
-void f_dynamic_noexcept() throw(int); // just for testing, throwing int is not ideal.
+void f_dynamic_noexcept() throw(int);
 void f_dynamic_noexcept_any() throw(...);
 
 // RUN: c-index-test -cursor-at=%s:6:4 %s | FileCheck -check-prefix=CHECK-COMPLETION-1 %s
