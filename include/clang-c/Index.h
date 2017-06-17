@@ -210,7 +210,7 @@ enum CXCursor_ExceptionSpecificationKind {
   CXCursor_ExceptionSpecificationKind_ComputedNoexcept,
 
   /**
-   * \brief The exception specification has not yet been evaluated
+   * \brief The exception specification has not yet been evaluated.
    */
   CXCursor_ExceptionSpecificationKind_Unevaluated,
 
